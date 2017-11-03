@@ -1,0 +1,51 @@
+ASSESMENT HOMEWORK 2
+
+Problem 1:
+
+For Problem 1, we were tasked with finding a way to convert a hw1 grammar to a 
+hw2 grammar. The start symbol for the grammar would be the same, so that is 
+returned the same way. For converting the grammar into a matching function. The
+function must go through each list of lists in the hw1 grammar and convert them
+to a function. This is done by parsing the list with a non terminal symbol and
+appending rules to the symbol. 
+
+Problem 2: 
+
+For problem, 2 we were tasked with finding a way to find a derivation for a
+suffix given an acceptor and a grammar. My function works in three parts. First,
+there is the top level descriptor parse prefix that is passed all the arguments.
+This function then calls match_rules. This matcher takes the rules of the grammar, 
+along with the rules associated with the specific symbol that is being examined, and
+checks if they are valid at a high level. It does this by just checking if there are rules
+associated with the symbol. If there are, it goes through each possible rule and
+calls the next function match_acceptor. 
+
+match_acceptor is the function that does the bulk of the work. It is passed the
+specific rule that is being examined as well as the fragment being examined. It
+recursively goes through each part of the fragment and validates the expression
+against the rules. If all parts of the fragment are exhausted. It cals the acceptor
+to see if the final derivation is acceptable to the acceptor. If it is, then it returns
+Some to match_rules. To check whether the parts of the fragment are acceptable, the 
+function first checks the check_rule that is passed to it and sees whether the symbols
+are compatible. If the symbols are not compatible, then the funciton immediately returns 
+None and goes back up one level of recursion. At this level, the fuction then tries to
+use the next rule. If all the rules have been exhausted, the function then passes the 
+derivation and fragment to the acceptor. In this case, the eventual return value of the
+function is completely dependent on the acceptor. If the acceptor for example is the 
+accept_all acceptor, then no matter what derivation is found the acceptor will accept 
+it. In the case of the empty_suffix acceptor, only full derivations are accepted. If the
+acceptor accepts the derivation, the match_rules functions returns the same thing as
+the match_acceptor function. If the acceptor rejects the derivation, then the return value
+is None. 
+
+The function also makes sure the rule makes sense in general. It does 
+this by parsing each part of the rule individually. For example, in the
+expression ["1", "+", "2"]. It first goes through and maps that entire
+expression to an Expr which then maps to Term, Binop, Expr. This then maps
+1 to term, Binop to + and Expr to 2 which validates the derivation. This
+derivation is then passed to accpetor which returns None if it is not accepted. 
+
+The limitations of this prefix parser is that it expects the grammar to be left
+associative. However, the professor mentioned that this was fine in lecture. If
+the function is currently passed a right associative grammar, or a recursive grammar,
+when the parser tries to match a recursive rule it will enter an infinite loop. 
